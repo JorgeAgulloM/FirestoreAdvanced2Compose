@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softyorch.firestoreadvanced2compose.R
 import com.softyorch.firestoreadvanced2compose.domain.model.TransactionModel
+import com.softyorch.firestoreadvanced2compose.domain.model.TransactionModel.Companion.amountFormatted
 import com.softyorch.firestoreadvanced2compose.ui.theme.Gray
 import com.softyorch.firestoreadvanced2compose.ui.theme.Purple40
 import com.softyorch.firestoreadvanced2compose.ui.theme.Purple80
@@ -89,7 +90,7 @@ fun TransactionItem(transaction: TransactionModel) {
             Text(text = "Lunes 23 Marzo", fontSize = 14.sp)
         }
         Spacer(modifier = Modifier.weight(1f))
-        Text(text = "${transaction.amount}€", color = Color.Red)
+        Text(text = "${transaction.amountFormatted()}€", color = Color.Red)
     }
 }
 
@@ -109,7 +110,7 @@ fun Balance(isLoading: Boolean, totalAmount: String?) {
                     Spacer(modifier = Modifier.height(6.dp))
                     if (isLoading) CircularProgressIndicator()
                     else Text(
-                        "$totalAmount$",
+                        "$totalAmount€",
                         fontSize = 28.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
