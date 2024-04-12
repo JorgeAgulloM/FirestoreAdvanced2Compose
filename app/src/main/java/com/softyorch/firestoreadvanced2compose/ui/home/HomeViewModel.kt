@@ -1,16 +1,32 @@
 package com.softyorch.firestoreadvanced2compose.ui.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.softyorch.firestoreadvanced2compose.data.network.DatabaseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(): ViewModel() {
+class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
 
+    init {
+        viewModelScope.launch {
+            db.getTransactions().collect { transactions ->
+                _uiState.update { state ->
+                    state.copy(
+                        transactions = transactions,
+                        totalAmount = String.format("%.2f", transactions.sumOf { it.amount })
+                    )
+                }
+            }
+        }
+    }
 
 }
