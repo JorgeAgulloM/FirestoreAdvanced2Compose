@@ -6,4 +6,5 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val transactions: List<TransactionModel> = emptyList(),
     val totalAmount: String? = null,
+    val showAddTransaction: Boolean = false,
 )
