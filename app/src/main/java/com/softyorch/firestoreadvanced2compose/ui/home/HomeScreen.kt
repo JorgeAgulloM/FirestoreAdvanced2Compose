@@ -43,11 +43,12 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
     if (uiState.showAddTransaction) {
         AddTransactionDialog(
-            onAddTransaction = {
-                viewModel.onAddNewTransaction(false)
+            onAddTransaction = { title, amount, date ->
+                viewModel.onAddNewTransaction(title, amount, date)
+                viewModel.onDismissTransactionDialog()
             }
         ) {
-            viewModel.onAddNewTransaction(false)
+            viewModel.onDismissTransactionDialog()
         }
     }
 
@@ -60,7 +61,7 @@ fun HomeScreen(viewModel: HomeViewModel) {
             modifier = Modifier.padding(start = 24.dp, top = 24.dp)
         )
         Balance(uiState.isLoading, uiState.totalAmount) {
-            viewModel.onAddNewTransaction(true)
+            viewModel.onShowTransactionDialog()
         }
         Text(
             text = "Recent Transactions",
