@@ -42,4 +42,8 @@ class DatabaseRepository @Inject constructor(private val db: FirebaseFirestore) 
         }
     }
 
+    fun deleteTransaction(id: String) {
+        db.collection(USER_COLLECTION).document(id).delete()
+    }
+
 }
