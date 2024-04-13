@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,8 @@ import com.softyorch.firestoreadvanced2compose.domain.model.TransactionModel.Com
 import com.softyorch.firestoreadvanced2compose.ui.theme.Gray
 import com.softyorch.firestoreadvanced2compose.ui.theme.Purple40
 import com.softyorch.firestoreadvanced2compose.ui.theme.Purple80
+import me.saket.swipe.SwipeAction
+import me.saket.swipe.SwipeableActionsBox
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
@@ -70,15 +73,29 @@ fun HomeScreen(viewModel: HomeViewModel) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 24.dp)
         )
-        Transactions(uiState.transactions)
+        Transactions(uiState.transactions) { id -> viewModel.deleteTransaction(id) }
     }
 }
 
 @Composable
-fun Transactions(transactions: List<TransactionModel>) {
+fun Transactions(transactions: List<TransactionModel>, onItemRemove: (String) -> Unit) {
     LazyColumn {
         items(transactions) { transaction ->
-            TransactionItem(transaction)
+            val swipeLeft = SwipeAction(
+                icon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = null,
+                        modifier = Modifier.size(48.dp).padding(horizontal = 12.dp)
+                    )
+                },
+                background = Color.Red,
+                isUndo = true,
+                onSwipe = { onItemRemove(transaction.id) }
+            )
+            SwipeableActionsBox(endActions = listOf(swipeLeft)) {
+                TransactionItem(transaction)
+            }
         }
     }
 }
