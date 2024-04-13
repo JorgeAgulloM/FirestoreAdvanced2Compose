@@ -55,6 +55,9 @@ android {
 
 dependencies {
 
+    // Swipe
+    implementation(libs.swipe)
+
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
     implementation("com.google.firebase:firebase-analytics-ktx")
