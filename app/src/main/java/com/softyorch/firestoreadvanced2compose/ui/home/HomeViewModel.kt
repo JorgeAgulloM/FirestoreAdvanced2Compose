@@ -47,4 +47,8 @@ class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : Vi
         onDismissTransactionDialog()
     }
 
+    fun deleteTransaction(id: String) {
+        db.deleteTransaction(id)
+    }
+
 }
