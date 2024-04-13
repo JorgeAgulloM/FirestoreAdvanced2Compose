@@ -29,4 +29,8 @@ class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : Vi
         }
     }
 
+    fun onAddNewTransaction(show: Boolean) {
+        _uiState.update { it.copy(showAddTransaction = show) }
+    }
+
 }
