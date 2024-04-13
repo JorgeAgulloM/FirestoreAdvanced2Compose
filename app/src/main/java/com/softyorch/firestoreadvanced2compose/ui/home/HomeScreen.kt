@@ -41,7 +41,17 @@ fun HomeScreen(viewModel: HomeViewModel) {
 
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
 
-    Column() {
+    if (uiState.showAddTransaction) {
+        AddTransactionDialog(
+            onAddTransaction = {
+                viewModel.onAddNewTransaction(false)
+            }
+        ) {
+            viewModel.onAddNewTransaction(false)
+        }
+    }
+
+    Column {
         Text(
             text = "Hi, Yorch",
             fontSize = 24.sp,
@@ -49,7 +59,9 @@ fun HomeScreen(viewModel: HomeViewModel) {
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(start = 24.dp, top = 24.dp)
         )
-        Balance(uiState.isLoading, uiState.totalAmount)
+        Balance(uiState.isLoading, uiState.totalAmount) {
+            viewModel.onAddNewTransaction(true)
+        }
         Text(
             text = "Recent Transactions",
             color = Color.Black,
@@ -82,9 +94,7 @@ fun TransactionItem(transaction: TransactionModel) {
             modifier = Modifier.size(48.dp)
         )
         Spacer(modifier = Modifier.width(24.dp))
-        Column(
-
-        ) {
+        Column {
             Text(text = transaction.title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             Text(text = "Lunes 23 Marzo", fontSize = 14.sp)
@@ -95,7 +105,7 @@ fun TransactionItem(transaction: TransactionModel) {
 }
 
 @Composable
-fun Balance(isLoading: Boolean, totalAmount: String?) {
+fun Balance(isLoading: Boolean, totalAmount: String?, onAddTransaction: () -> Unit) {
     Card(
         modifier = Modifier.padding(24.dp).wrapContentHeight()
     ) {
@@ -117,9 +127,7 @@ fun Balance(isLoading: Boolean, totalAmount: String?) {
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = {
-
-                }) {
+                IconButton(onClick = { onAddTransaction() }) {
                     Image(
                         painterResource(id = R.drawable.ic_add),
                         contentDescription = null,
