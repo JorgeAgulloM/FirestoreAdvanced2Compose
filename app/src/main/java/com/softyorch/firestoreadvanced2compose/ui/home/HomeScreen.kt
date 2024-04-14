@@ -1,5 +1,6 @@
 package com.softyorch.firestoreadvanced2compose.ui.home
 
+import android.app.AlertDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,17 @@ import me.saket.swipe.SwipeableActionsBox
 fun HomeScreen(viewModel: HomeViewModel) {
 
     val uiState: HomeUiState by viewModel.uiState.collectAsState()
+    val showDialog: Boolean? by viewModel.showBlockDialog.collectAsState()
+
+    if (showDialog == true) {
+        val context = LocalContext.current
+        AlertDialog.Builder(context)
+            .setTitle("Necesitas actualziar")
+            .setMessage("Ve a play store")
+            .setCancelable(false)
+            .setPositiveButton("Actualzia") {_, _ -> }
+            .show()
+    }
 
     if (uiState.showAddTransaction) {
         AddTransactionDialog(
