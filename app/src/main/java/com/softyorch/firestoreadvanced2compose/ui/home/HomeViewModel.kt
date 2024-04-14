@@ -1,10 +1,12 @@
 package com.softyorch.firestoreadvanced2compose.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softyorch.firestoreadvanced2compose.data.network.DatabaseRepository
 import com.softyorch.firestoreadvanced2compose.domain.dto.TransactionDTO.Companion.prepareDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -18,6 +20,7 @@ class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : Vi
     val uiState: StateFlow<HomeUiState> = _uiState
 
     init {
+        initConfigApp()
         viewModelScope.launch {
             db.getTransactions().collect { transactions ->
                 _uiState.update { state ->
@@ -49,6 +52,13 @@ class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : Vi
 
     fun deleteTransaction(id: String) {
         db.deleteTransaction(id)
+    }
+
+    private fun initConfigApp() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val title = db.getAppInfo()
+            Log.i("LOGTAG", "RemoteConfig -> title: $title")
+        }
     }
 
 }
