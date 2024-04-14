@@ -1,4 +1,4 @@
-package com.softyorch.firestoreadvanced2compose
+package com.softyorch.firestoreadvanced2compose.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
