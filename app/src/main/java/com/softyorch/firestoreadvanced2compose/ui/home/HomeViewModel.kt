@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softyorch.firestoreadvanced2compose.data.network.DatabaseRepository
+import com.softyorch.firestoreadvanced2compose.domain.CanAccessToApp
 import com.softyorch.firestoreadvanced2compose.domain.dto.TransactionDTO.Companion.prepareDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,13 +12,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(
+    private val db: DatabaseRepository,
+    private val canAccessToApp: CanAccessToApp
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
+
+    private val _showBlockDialog = MutableStateFlow<Boolean?>(null)
+    val showBlockDialog: StateFlow<Boolean?> = _showBlockDialog
 
     init {
         initConfigApp()
@@ -55,9 +63,15 @@ class HomeViewModel @Inject constructor(private val db: DatabaseRepository) : Vi
     }
 
     private fun initConfigApp() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val title = db.getAppInfo()
-            Log.i("LOGTAG", "RemoteConfig -> title: $title")
+        val title = db.getAppInfo()
+        Log.i("LOGTAG", "RemoteConfig -> title: $title")
+
+        viewModelScope.launch {
+            val canAccess = withContext(Dispatchers.IO) {
+                canAccessToApp()
+            }
+
+            _showBlockDialog.value = !canAccess
         }
     }
 
